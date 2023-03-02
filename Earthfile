@@ -104,7 +104,7 @@ integration-test-mysql:
 
     DO +COMMON_INTEGRATION_SETUP_AND_MIX
 
-    ARG MYSQL="5.7"
+    ARG MYSQL="8.0"
     WITH DOCKER \
         --pull "mysql:$MYSQL"
         RUN set -e; \
