@@ -54,7 +54,7 @@ jobs:
           version: v0.5.10
       - uses: actions/checkout@v2
       - name: test ecto_sql
-        run: earthly -P --ci --build-arg ELIXIR_BASE=${{matrix.elixirbase}} --build-arg POSTGRES=${{matrix.postgres}} +integration-test-mysql
+        run: earthly -P --ci --build-arg ELIXIR_BASE=${{matrix.elixirbase}} --build-arg POSTGRES=${{matrix.postgres}} +integration-test-mysql +integration-test-mysql-8
   test-mssql:
     name: mssql integration test
     runs-on: ubuntu-latest

@@ -32,8 +32,11 @@ integration-test-all:
 
     BUILD \
         --build-arg MYSQL=5.7 \
-        --build-arg MYSQL=8.0 \
         +integration-test-mysql
+
+    BUILD \
+        --build-arg MYSQL=8.0 \
+        +integration-test-mysql-8
 
     BUILD \
         --build-arg MSSQL=2017 \
@@ -104,6 +107,28 @@ integration-test-mysql:
 
     DO +COMMON_INTEGRATION_SETUP_AND_MIX
 
+    ARG MYSQL="5.7"
+    WITH DOCKER \
+        --pull "mysql:$MYSQL"
+        RUN set -e; \
+            timeout=$(expr $(date +%s) + 30); \
+            docker run --name mysql --network=host -d -e MYSQL_ROOT_PASSWORD=root "mysql:$MYSQL" --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,ANSI_QUOTES"; \
+            # wait for mysql to start
+            while ! mysqladmin ping --host=127.0.0.1 --port=3306 --protocol=TCP --silent; do \
+                test "$(date +%s)" -le "$timeout" || (echo "timed out waiting for mysql"; exit 1); \
+                echo "waiting for mysql"; \
+                sleep 1; \
+            done; \
+            # run tests
+            MYSQL_URL=root:root@127.0.0.1 ECTO_ADAPTER=myxql mix test;
+    END
+
+integration-test-mysql-8:
+    FROM +integration-test-base
+    RUN apk add mysql-client
+
+    DO +COMMON_INTEGRATION_SETUP_AND_MIX
+
     ARG MYSQL="8.0"
     WITH DOCKER \
         --pull "mysql:$MYSQL"
@@ -119,7 +144,6 @@ integration-test-mysql:
             # run tests
             MYSQL_URL=root:root@127.0.0.1 ECTO_ADAPTER=myxql mix test;
     END
-
 
 integration-test-mssql:
     FROM +integration-test-base
