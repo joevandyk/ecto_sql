@@ -134,7 +134,7 @@ integration-test-mysql-8:
         --pull "mysql:$MYSQL"
         RUN set -e; \
             timeout=$(expr $(date +%s) + 30); \
-            docker run --name mysql --network=host -e MYSQL_ROOT_PASSWORD=root "mysql:$MYSQL" --default-authentication-plugin=mysql_native_password --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION,ANSI_QUOTES"; \
+            docker run --name mysql --network=host -d -e MYSQL_ROOT_PASSWORD=root "mysql:$MYSQL" --default-authentication-plugin=mysql_native_password --sql_mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION,ANSI_QUOTES"; \
             # wait for mysql to start
             while ! mysqladmin ping --host=127.0.0.1 --port=3306 --protocol=TCP --silent; do \
                 test "$(date +%s)" -le "$timeout" || (echo "timed out waiting for mysql"; exit 1); \
