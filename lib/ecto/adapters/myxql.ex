@@ -447,6 +447,8 @@ defmodule Ecto.Adapters.MyXQL do
       |> Keyword.update(:env, env, &Enum.concat(env, &1))
 
 
+    IO.inspect("#{cmd} #{args} #{cmd_opts}")
+
     System.cmd(cmd, args, cmd_opts)
   end
 end
