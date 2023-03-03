@@ -441,6 +441,8 @@ defmodule Ecto.Adapters.MyXQL do
         "--protocol", protocol
       ] ++ user_args ++ database_args ++ opt_args
 
+    IO.inspect("#{cmd} #{args} #{cmd_opts}")
+
     cmd_opts =
       cmd_opts
       |> Keyword.put_new(:stderr_to_stdout, true)
